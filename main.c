@@ -3,11 +3,12 @@
 #include <time.h>
 
 #include "pq.h"
+//extern struct pq;
 
 int main(int argc, char *argv[])
 {
   int i;
-  const int n = 1000;
+  const int n = 100;
   double *v = malloc(sizeof(double)*n);
   double **p = malloc(sizeof(double*)*n);
   pq *mypq;
@@ -18,16 +19,19 @@ int main(int argc, char *argv[])
   for (i = 0; i < n; i++) {
     v[i] = drand48();
     p[i] = &v[i];
+    printf("%g\n", *p[i]);    
   }
-
+printf("\n");
   /* begin sort */
   for (i = 0; i < n; i++) pq_push(mypq, v[i], (void*)p[i]);
   for (i = 0; i < n; i++) p[i] = pq_pop(mypq);
   /* end sort */
-
+/*
   for (i = 0; i < n; i++) {
     if (p[i]) printf("%g\n", *p[i]);
   }
+*/
+  print_heap(mypq);
 
   pq_destroy(mypq);
 

@@ -1,6 +1,7 @@
 
 typedef struct pq pq;
 
+
 /* Allocates and initializes a new pq */
 pq* pq_create();
 
@@ -13,5 +14,15 @@ void* pq_pop(pq *head);
 /* Deallocates (frees) pq. Shallow destruction,
 meaning nodes in the pq are not recursively freed. */
 void pq_destroy();
+
+pq* heapify(pq* head, int index);
+
+int right_child(int i);
+
+int left_child(int i);
+
+int parent(int i);
+
+void print_heap(pq* heap);
 
 
