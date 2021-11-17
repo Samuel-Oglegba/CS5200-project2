@@ -34,6 +34,13 @@ printf("\n");
   print_heap(mypq);
 
   pq_destroy(mypq);
+  
+  print_link(mypq);
+  printf("-----------\n");
+  InsertionSort(mypq);
+
+
+print_link(mypq);
 
   free(v);
   free(p);
