@@ -14,29 +14,6 @@ struct pq {
 
 //struct pq *head_n = NULL; //node head
 
-
-/* Allocates and initializes a new pq */
-pq* pq_create()
-{
-  //struct pq* test= NULL;
-  struct pq* head_n = (pq*)malloc(sizeof(pq));
-  head_n->next = NULL;
-  return head_n;
-}
-
-
-void pq_push(pq *head, double key, void *value) {
-	struct pq* new_node = (pq*)malloc(sizeof(pq));
-	new_node->key = key;
-	new_node->value = value;
-	struct pq* current = head;
-	while(current->next){
-		current = current->next;
-	}
-	current->next = new_node;
-	
-}
-
 void InsertionSort(pq* head)
 {   
 		if(!head || !head->next) return;
@@ -72,6 +49,33 @@ void InsertionSort(pq* head)
         // Update head to point to sorted linked list
         head = sort;
 }
+
+
+
+/* Allocates and initializes a new pq */
+pq* pq_create()
+{
+  //struct pq* test= NULL;
+  struct pq* head_n = (pq*)malloc(sizeof(pq));
+  head_n->next = NULL;
+  return head_n;
+}
+
+
+void pq_push(pq *head, double key, void *value) {
+	struct pq* new_node = (pq*)malloc(sizeof(pq));
+	new_node->key = key;
+	new_node->value = value;
+	struct pq* current = head;
+	while(current->next){
+		current = current->next;
+	}
+	current->next = new_node;
+	
+  InsertionSort(head);
+}
+
+
 void print_link(pq *head){
 	struct pq* current = head;
 	while (current->next){

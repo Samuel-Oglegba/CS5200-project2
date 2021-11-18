@@ -32,6 +32,84 @@ double get_min(pq* minheap) {
     return minheap->ptr[0];
 }
 
+
+pq* heapify(pq* head, int index) {
+    // Rearranges the heap as to maintain
+    // the min-heap property
+    if (head->size <= 1)
+        return head;
+     
+    int left = left_child(index); 
+    int right = right_child(index); 
+ 
+    // Variable to get the smallest element of the subtree
+    // of an element an index
+    int smallest = index; 
+     
+    // If the left child is smaller than this element, it is
+    // the smallest
+    if (left < head->size && head->ptr[left] < head->ptr[index]) 
+        smallest = left; 
+     
+    // Similarly for the right, but we are updating the smallest element
+    // so that it will definitely give the least element of the subtree
+    if (right < head->size && head->ptr[right] < head->ptr[smallest]) 
+        smallest = right; 
+ 
+    // Now if the current element is not the smallest,
+    // swap with the current element. The min heap property
+    // is now satisfied for this subtree. We now need to
+    // recursively keep doing this until we reach the root node,
+    // the point at which there will be no change!
+    if (smallest != index) 
+    { 
+        int temp = head->ptr[index];
+        head->ptr[index] = head->ptr[smallest];
+        head->ptr[smallest] = temp;
+        head = heapify(head, smallest); 
+    }
+ 
+    return head;
+}
+
+
+pq* delete_element(pq* head, int index) {
+    // Deletes an element, indexed by index
+    // Ensure that it's lesser than the current root
+    head->ptr[index] = get_min(head) - 1;
+     
+    // Now keep swapping, until we update the tree
+    int curr = index;
+    while (curr > 0 && head->ptr[parent(curr)] > head->ptr[curr]) {
+        int temp = head->ptr[parent(curr)];
+        head->ptr[parent(curr)] = head->ptr[curr];
+        head->ptr[curr] = temp;
+        curr = parent(curr);
+    }
+ 
+    // Now simply delete the minimum element 
+  //  head = delete_minimum(head);
+    head = pq_pop(head);
+    return head;
+}
+
+
+void print_heap(pq* heap) {
+    // Simply print the array. This is an
+    // inorder traversal of the tree
+    printf("Min Heap:\n");
+    int MAX_SIZE = heap->size;
+
+    for (int i=0; i<MAX_SIZE; i++) {
+        //printf("%g -> ", heap->ptr[i]);
+
+         double left = left_child(i)<MAX_SIZE ? heap->ptr[left_child(i)] : 0;
+         double right = right_child(i)<MAX_SIZE ? heap->ptr[right_child(i)] : 0;
+        printf("Parent: %g, -> left: %g, -> right: %g \n", heap->ptr[i], left, right);
+    }
+    printf("\n");
+}
+
 /* Allocates and initializes a new pq */
 pq* pq_create()
 {
@@ -115,77 +193,5 @@ void pq_destroy(pq *head)
   free(head);
 }
 
-pq* heapify(pq* head, int index) {
-    // Rearranges the heap as to maintain
-    // the min-heap property
-    if (head->size <= 1)
-        return head;
-     
-    int left = left_child(index); 
-    int right = right_child(index); 
- 
-    // Variable to get the smallest element of the subtree
-    // of an element an index
-    int smallest = index; 
-     
-    // If the left child is smaller than this element, it is
-    // the smallest
-    if (left < head->size && head->ptr[left] < head->ptr[index]) 
-        smallest = left; 
-     
-    // Similarly for the right, but we are updating the smallest element
-    // so that it will definitely give the least element of the subtree
-    if (right < head->size && head->ptr[right] < head->ptr[smallest]) 
-        smallest = right; 
- 
-    // Now if the current element is not the smallest,
-    // swap with the current element. The min heap property
-    // is now satisfied for this subtree. We now need to
-    // recursively keep doing this until we reach the root node,
-    // the point at which there will be no change!
-    if (smallest != index) 
-    { 
-        int temp = head->ptr[index];
-        head->ptr[index] = head->ptr[smallest];
-        head->ptr[smallest] = temp;
-        head = heapify(head, smallest); 
-    }
- 
-    return head;
-}
 
-pq* delete_element(pq* head, int index) {
-    // Deletes an element, indexed by index
-    // Ensure that it's lesser than the current root
-    head->ptr[index] = get_min(head) - 1;
-     
-    // Now keep swapping, until we update the tree
-    int curr = index;
-    while (curr > 0 && head->ptr[parent(curr)] > head->ptr[curr]) {
-        int temp = head->ptr[parent(curr)];
-        head->ptr[parent(curr)] = head->ptr[curr];
-        head->ptr[curr] = temp;
-        curr = parent(curr);
-    }
- 
-    // Now simply delete the minimum element 
-  //  head = delete_minimum(head);
-    head = pq_pop(head);
-    return head;
-}
 
-void print_heap(pq* heap) {
-    // Simply print the array. This is an
-    // inorder traversal of the tree
-    printf("Min Heap:\n");
-    int MAX_SIZE = heap->size;
-
-    for (int i=0; i<MAX_SIZE; i++) {
-        //printf("%g -> ", heap->ptr[i]);
-
-         double left = left_child(i)<MAX_SIZE ? heap->ptr[left_child(i)] : 0;
-         double right = right_child(i)<MAX_SIZE ? heap->ptr[right_child(i)] : 0;
-        printf("Parent: %g, -> left: %g, -> right: %g \n", heap->ptr[i], left, right);
-    }
-    printf("\n");
-}

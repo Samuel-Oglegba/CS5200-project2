@@ -8,7 +8,7 @@
 int main(int argc, char *argv[])
 {
   int i;
-  const int n = 100;
+  const int n = 100;//10000;
   double *v = malloc(sizeof(double)*n);
   double **p = malloc(sizeof(double*)*n);
   pq *mypq;
@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
   for (i = 0; i < n; i++) {
     v[i] = drand48();
     p[i] = &v[i];
-    printf("%g\n", *p[i]);    
+    //printf("%g\n", *p[i]);    
   }
 printf("\n");
   /* begin sort */
@@ -31,16 +31,14 @@ printf("\n");
     if (p[i]) printf("%g\n", *p[i]);
   }
 */
-  print_heap(mypq);
+  //print_heap(mypq);
 
   pq_destroy(mypq);
   
-  print_link(mypq);
-  printf("-----------\n");
-  InsertionSort(mypq);
-
-
-print_link(mypq);
+  //print_link(mypq);
+ // printf("-----------\n");
+  //InsertionSort(mypq);
+  // print_link(mypq);
 
   free(v);
   free(p);
