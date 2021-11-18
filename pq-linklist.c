@@ -12,7 +12,7 @@ struct pq {
 };
 
 
-//struct pq *head_n = NULL; //node head
+//struct pq *head_o = NULL; //node head
 
 void InsertionSort(pq* head)
 {   
@@ -66,6 +66,7 @@ void pq_push(pq *head, double key, void *value) {
 	struct pq* new_node = (pq*)malloc(sizeof(pq));
 	new_node->key = key;
 	new_node->value = value;
+//	printf("%p", new_node->value);
 	struct pq* current = head;
 	while(current->next){
 		current = current->next;
@@ -82,12 +83,17 @@ void print_link(pq *head){
 		current = current->next;
 		printf("%g\n", *(double*)current->value);
 	}
+	printf("============\n");
 }
 /* Returns value from pq having the minimum key */
 void* pq_pop(pq *head)
 {
-  struct pq *p = head->value;
-  head = head->next;
+  //struct pq* temp = head;
+  //print_link(head);
+  void *p = head->next->value;
+  //printf("%g  \n", *(double*)p);
+  *head = *head->next;
+  //free(temp);
   return p;
 }
 
