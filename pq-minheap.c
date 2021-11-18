@@ -113,7 +113,7 @@ void print_heap(pq* heap) {
 /* Allocates and initializes a new pq */
 pq* pq_create()
 {
-      int n = 100;
+      int n = 10000;
       pq * new_pq = (pq*)malloc(sizeof(pq));
 
       new_pq->ptr = malloc(sizeof(double)*n);
