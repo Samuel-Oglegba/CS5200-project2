@@ -7,93 +7,91 @@
 struct pq {
   void *value;	
   double key;
-  //ptr->next
-  pq *next;
+  struct pq *next;
 };
 
 
-//struct pq *head_o = NULL; //node head
-
-void InsertionSort(pq* head)
-{   
-		if(!head || !head->next) return;
-        // Initialize sorted linked list
-        struct pq *sort= NULL;
-        struct pq* current = head->next;
-        // Traverse the given linked list and insert every
-        // node to sorted
-        while (current != NULL) {
-            // Store next for next iteration
-            struct pq* next = current->next;
-            // insert current in sorted linked list
-            
-            if (sort == NULL || sort->key >= current->key) {
-            current->next = sort;
-            sort = current;
-            head->next = sort;
-        }
-        else {
-            struct pq* newcurrent = sort;
-          
-            
-            while (newcurrent->next != NULL && newcurrent->next->key < current->key) {
-                newcurrent = newcurrent->next;
-            }
-            current->next = newcurrent->next;
-            newcurrent->next = current;
-        }
-        	//printf("%g\n", current->key);
-            // Update current
-            current = next;
-        }
-        // Update head to point to sorted linked list
-        head = sort;
-}
-
+struct pq *head_o = NULL; //node head
 
 
 /* Allocates and initializes a new pq */
 pq* pq_create()
 {
-  //struct pq* test= NULL;
-  struct pq* head_n = (pq*)malloc(sizeof(pq));
-  head_n->next = NULL;
-  return head_n;
+  head_o = (pq*)malloc(sizeof(pq));
+  head_o->next = NULL;
+  return head_o;
 }
-
-
-void pq_push(pq *head, double key, void *value) {
-	struct pq* new_node = (pq*)malloc(sizeof(pq));
-	new_node->key = key;
-	new_node->value = value;
-//	printf("%p", new_node->value);
-	struct pq* current = head;
-	while(current->next){
-		current = current->next;
-	}
-	current->next = new_node;
-	
-  InsertionSort(head);
-}
-
 
 void print_link(pq *head){
+	printf("============\n");
 	struct pq* current = head;
-	while (current->next){
-		current = current->next;
+	while (current){
 		printf("%g\n", *(double*)current->value);
+		current = current->next;
+		
 	}
 	printf("============\n");
 }
+
+void pq_push(pq *head, double key, void *value) {
+	
+	if(head_o->next == NULL){//list is empty
+		struct pq* current = (pq*)malloc(sizeof(pq));		
+		current->value = value;
+		current->key = key;
+		head_o->next = current;
+		current->next = NULL;
+	}else{//List not empty
+		struct pq* new_node = (pq*)malloc(sizeof(pq));
+		new_node->key = key;
+		new_node->value = value;
+		struct pq* current = head_o->next;
+		struct pq* temp = head_o;
+		//not sure why can't compare nodes, make new variables
+		double node = new_node->key;
+		double curr = current->key;
+		
+		while(node > curr){
+		//if new node > current now, go to next
+			temp = current;
+			current = current->next;
+			if(current== NULL){
+		//current is null -> the new node is larger than all nodes
+				curr = node +1;
+			}else{
+		//current not null, change key to compare
+				curr = current->key;
+			}
+		} 
+		//insertion sort(?
+		if(temp==head_o){ //new_node is smallest
+			new_node->next = current;
+			head_o->next = new_node;
+			
+		}else if(current== NULL){ //new_node is largest
+			struct pq* now = (pq*)malloc(sizeof(pq));
+			now = head_o;
+			while(now->next!=NULL){
+				now = now->next;
+			}
+			now->next = new_node;
+			now = now->next;
+			now->next = NULL;
+		}else{ //new node is somewhere in the list
+			new_node->next = current;
+			temp->next = new_node;
+		}
+	}
+}
+
+
+
+
 /* Returns value from pq having the minimum key */
 void* pq_pop(pq *head)
 {
-  //struct pq* temp = head;
-  //print_link(head);
   void *p = head->next->value;
-  //printf("%g  \n", *(double*)p);
   *head = *head->next;
-  //free(temp);
   return p;
 }
 
