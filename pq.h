@@ -15,15 +15,15 @@ void* pq_pop(pq *head);
 meaning nodes in the pq are not recursively freed. */
 void pq_destroy();
 
-pq* heapify(pq* head, int index);
+//pq* heapify(pq* head, int index);
 
-int right_child(int i);
+//int right_child(int i);
 
-int left_child(int i);
+//int left_child(int i);
 
 int parent(int i);
 
-//void print_heap(pq* heap);
+ void print_heap(pq* heap);
 //void print_link(pq *head);
 //void InsertionSort(pq *head);
 
