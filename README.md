@@ -6,3 +6,10 @@
   ./test.exe
 
   gcc sieve.c -o sieveExecutable
+
+
+  #### Task 1 #########
+  gcc -O2 main.c pq.h pq-minheap.c -o pq-minheap
+
+  ########## Task 2 ############
+  gcc -O2 main.c pq.h pq-minheap.c -S pq-minheap
