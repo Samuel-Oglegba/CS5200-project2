@@ -1,6 +1,6 @@
 
 typedef struct pq pq;
-
+typedef struct dq dq;
 
 /* Allocates and initializes a new pq */
 pq* pq_create();

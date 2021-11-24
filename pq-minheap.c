@@ -2,243 +2,175 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h>
 
-
-struct pq {
-   void *ptr;
-   double key;
-   // Current Size of the minheap
-   int size;
-   // Maximum capacity of the minheap
-   int capacity;
-  // pq * parent;
-   pq * left;
-   pq * right;
+struct dq {
+    void *value;
+    double key;
 };
 
-struct pq *head_o = NULL; //node head
-
-void printme(pq* heap, char str1[7]){
-    
-    if(heap && heap->ptr != NULL){       
-
-         printme(heap->left,"left");
-
-         printme(heap->right,"right");
-
-         printf("%s: %g -- capacity %d -- size %d \n", str1,*(double *)heap->ptr, heap->capacity, heap->size); 
-    }  
-
-}
-
-void print_heap(pq* heap) {     
-      printme(heap, "root");
-}
-
-//swap two nodes
-void swapNode(pq *x, pq *y){
-        
-        // printf("i am here %g -- %g\n", *(double *)x->ptr, y->key);
-        if(*(double *)x->ptr > 0 && y->key > 0){
-                                 
-                        void *temp1 = x->ptr;
-                        double temp2 = x->key;
-
-                            x->ptr = y->ptr;
-                            x->key = y->key;
-
-                        y->ptr = temp1;
-                        y->key = temp2;
-                        
-        }
-                               
-
-}
-
-
-// Count the number of nodes
-  int countNodes(struct pq *root) {
-    if (root == NULL){
-      return (0);
-    }    
-    return (1 + countNodes(root->left) + countNodes(root->right));
-  }
-
-// Check if the tree is a complete binary tree
-  bool checkComplete(struct pq *root, int index, int numberNodes) {
-    // Check if the tree is complete
-    if (root == NULL)
-      return true;
-
-    if (index >= numberNodes)
-      return false;
-
-    return (checkComplete(root->left, 2 * index + 1, numberNodes) && checkComplete(root->right, 2 * index + 2, numberNodes));
-  }
-
-  int parentNode(int i) {
-      // Get the index of the parent
-      return (i - 1) / 2;
-  }
-  
-  int left_child(int i) {
-      return (2*i + 1);
-  }
-  
-  int right_child(int i) {
-      return (2*i + 2);
-  }
-
-  int hasBothChild(pq* temp)
-  {
-      return temp && temp->left && temp->right;
-  }
-
-  void insertToParentNode(pq* heap, int parentIndex, double key, void *value, int capacity){
-  
-          if(!heap || heap->ptr == NULL){  
-              return;
-          }
-         
-          if(heap->size == parentIndex){
-               bool swapTheNodes = false;
-               if(*(double *)heap->ptr > key){
-                  swapTheNodes = true;
-                }
-
-              struct pq* nodeToAdd = (pq*)malloc(sizeof(pq));	
-              nodeToAdd->ptr = value;
-              nodeToAdd->key = key;
-              nodeToAdd->left = NULL;
-              nodeToAdd->right = NULL;
-             // nodeToAdd->parent = heap->ptr;
-              nodeToAdd->size = capacity;//heap->capacity; //this gives the index of each node               
-
-              if(heap->left == NULL){
-                heap->left = nodeToAdd; 
-                  if(swapTheNodes){
-                     //swap parent for right node
-                     // setNewParent(heap, heap->right,heap->left,1);
-                      swapNode(heap,heap->left);                     
-                  }              
-              }
-              else{
-                heap->right = nodeToAdd; 
-                  if(swapTheNodes){
-                     //swap parent for left node
-                    // setNewParent(heap, heap->left,heap->right,0);
-                      swapNode(heap,heap->right);                     
-                  }
-              }              
-        
-          }
-
-         insertToParentNode(heap->left, parentIndex, key, value, capacity);
-         insertToParentNode(heap->right, parentIndex, key, value, capacity);
-  }
-
-    void heapifyMe(pq* heap){
-
-         if(!heap || heap->ptr == NULL){  
-              return;
-          }
-
-         double smallest = *(double *)head_o->ptr;
-
-        
-        if(smallest > *(double *)heap->ptr){
-         
-          swapNode(head_o,heap); 
-          //printf("i came here %g\n", *(double *)heap->ptr);
-        }
-     
-        heapifyMe(heap->left);
-        heapifyMe(heap->right);
-
-    }
-
-  void sortHeap(pq* heap){
-     struct pq* current = (pq*)malloc(sizeof(pq));	
-     current = heap;//head_o;
-
-      printf("head:: %g\n",*(double *)head_o->ptr );
-    //  printf("capacity:: %d\n",head_o->capacity );
-
-      for (int i = (heap->capacity-2)/2; i >= 0; --i)
-      {
-        printf("capacity:: %d\n",head_o->capacity);
-      }
-
-    //  while (current && current->left != NULL)
-    //  {
-        
-        // printf("current -> left:: %g\n",*(double *)current->ptr );
-
-        // current = current->left; 
-        /* if(*(double *)current->ptr > *(double *)current->left){
-              swapNode(current,current->right);  
-
-              current = current->left; 
-          }
-          else if(){
-
-          }*/
-      // }
-     
-
-  }
-
+struct pq {
+   struct dq** _dq;
+  // Current Size of the minheap
+   int size;
+  // Maximum capacity of the minheap
+   int capacity;
+};
 
 /* Allocates and initializes a new pq */
 pq* pq_create()
 {
-      head_o = (pq*)malloc(sizeof(pq));
-      head_o->left = NULL;
-      head_o->right = NULL;
-      head_o->capacity = 0;
-      head_o->size = 0;
+      int capacity = 10000;
+      pq * new_pq = (pq*)malloc(sizeof(pq));
 
-      return head_o;
+      new_pq->_dq = malloc(sizeof(dq*)*capacity);
+
+      new_pq->capacity = capacity;
+      new_pq->size = 0;
+
+      return new_pq;
 }
+
+dq* create_new_data(double key, void *value) {
+    dq* new_data = (dq*) malloc(sizeof(dq));
+    new_data->key = key;
+    new_data->value = value;
+    return new_data;
+}
+
+int parent(int i) {
+    // Get the index of the parent
+    return (i - 1) / 2;
+}
+ 
+int left_child(int i) {
+    return (2*i + 1);
+}
+ 
+int right_child(int i) {
+    return (2*i + 2);
+}
+
+double get_min(pq* minheap) {
+    // Return the root node element,
+    // since that's the minimum
+    return minheap->_dq[0]->key;
+}
+
+
+pq* sortHeap(pq* head, int index) {
+   
+
+
+    int curr = index;
+    int smallest = -1;
+    int left = -1;
+    int right = -1;
+    // As long as you aren't in the root node, and while the
+    // parent of the last element is greater than it
+
+    while (curr < head->size) {
+            // Swap
+        smallest = curr;
+        left = left_child(curr);
+        right = right_child(curr);
+        if (left < head->size && head->_dq[left]->key < head->_dq[curr]->key) smallest = left;
+        if (right < head->size && head->_dq[right]->key < head->_dq[smallest]->key) smallest = right;
+        if (smallest == curr) break;
+
+        dq* temp = head->_dq[smallest];
+        head->_dq[smallest] = head->_dq[curr];
+        head->_dq[curr] = temp;
+        // Update the current index of element
+        curr = smallest;
+
+    }
+                 
+ 
+    return head;
+}
+
+
+void print_heap(pq* heap) {
+    // Simply print the array. This is an
+    // inorder traversal of the tree
+    printf("Min Heap:\n");
+    int MAX_SIZE = heap->size;
+
+    for (int i=0; i<MAX_SIZE; i++) {
+        //printf("%g -> ", heap->key[i]);
+
+         double left = left_child(i)<MAX_SIZE ? heap->_dq[left_child(i)]->key : 0;
+         double right = right_child(i)<MAX_SIZE ? heap->_dq[right_child(i)]->key : 0;
+        printf("Parent: %g, -> left: %g, -> right: %g \n", heap->_dq[i]->key, left, right);
+    }
+    printf("\n");
+}
+
+
+
+
 
 /* Adds value to pq based on numerical order of key */
 void pq_push(pq *head, double key, void *value)
 {
-    head->capacity++;
+      
+    if (head && head->size >= head->capacity) return;
 
-    if (head && !(head->ptr)){
-      head_o->ptr = value;
-      head_o->left = NULL;
-      head_o->right = NULL;
-     // head_o->parent = value;
-      head_o->size = head->capacity;
+              
+    head->size++;
+    head->_dq[head->size - 1] = create_new_data(key,value);
+
+    // Keep swapping until we reach the root
+    int curr = head->size - 1;
+    // As long as you aren't in the root node, and while the
+    // parent of the last element is greater than it
+
+    while (curr > 0 && head->_dq[parent(curr)]->key > head->_dq[curr]->key) {
+        // Swap
+        dq* temp = head->_dq[parent(curr)];
+        head->_dq[parent(curr)] = head->_dq[curr];
+        head->_dq[curr] = temp;
+        // Update the current index of element
+        curr = parent(curr);
     }
-    else{
 
-         struct pq* current = (pq*)malloc(sizeof(pq));	
-         struct pq* parent = NULL;	
-
-          current = head_o;
-          int isLeft = 0;
-
-         int parentIndex = parentNode(head->capacity-1);
-         insertToParentNode(head, (parentIndex+1), key, value, head_o->capacity); 
-    }
-
-    //sortHeap(head_o);
-
-    heapifyMe(head_o);
-          
+        
 }
 
 /* Returns value from pq having the minimum key */
 void* pq_pop(pq *head)
-{
-  void *p = head->ptr;
-  head->ptr = NULL;
-  return p;
-  
+{ 
+       /*
+        void *p = head->ptr;
+        head->ptr = NULL;
+        return p;
+        */
+     //  printf("aa -> %g\n", head->key[0]);
+     // Deletes the minimum element, at the root
+    if (!head || head->size == 0)
+          return head;
+ 
+        void *p = head->_dq[0]->value;
+        int size = head->size;
+        //printf("size -> %g\n", head->key[0]);
+
+        dq* last_element = head->_dq[size-1];
+        // Update root value with the last element
+        head->_dq[0] = last_element;
+        // Now remove the last element, by decreasing the size
+      
+        head->size--;
+        // We need to call sortHeap(), to maintain the min-heap
+        // property
+         head = sortHeap(head, 0);
+           // Making sure that heap property is also satisfied
+      
+       
+        //return head;
+        //printf("tt -> %g\n", head->key[0]);        
+        
+        return p;
+
 }
 
 
