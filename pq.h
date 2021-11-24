@@ -21,7 +21,9 @@ void pq_destroy();
 
 //int left_child(int i);
 
-int parent(int i);
+void print_link(pq *head);
+
+ int parent(int i);
 
  void print_heap(pq* heap);
 //void print_link(pq *head);

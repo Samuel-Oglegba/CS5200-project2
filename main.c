@@ -31,7 +31,7 @@ printf("\n");
     if (p[i]) printf("%g\n", *p[i]);
   }
 
-  print_heap(mypq);
+  //print_heap(mypq);
 
   pq_destroy(mypq);
   
