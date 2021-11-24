@@ -5,3 +5,4 @@ token
 pqNull
 *.exe
 pq-minheap
+*.s
